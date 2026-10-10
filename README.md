@@ -1,7 +1,7 @@
 # antivirus-for-a-day
 Trabalho úniversitário disciplina (Paradigmas de programação) sobre o paradigma de orientação a objetos
 
-# COMO FUNCIONA O RENDERER: PARA BURRINHOS E A LETÍCIA
+# COMO FUNCIONA O RENDERER: PARA BURROS E A LETÍCIA
 
 O `Renderer` monta a interface do jogo em uma matriz de caracteres. Cada posição da
 matriz representa um caractere que será mostrado no terminal.
