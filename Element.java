@@ -25,14 +25,9 @@ public class Element {
 
     public void update() {}
 
-<<<<<<< HEAD
-    public void draw(){}
-}
-=======
     public void draw(Renderer renderer) {}
 
     public Pair<Integer, Integer> getSize() {
         return new Pair<>(1, 1);
     }
 }
->>>>>>> c1831ec492da7756f442e1ee69c2d4a3d885baca

@@ -24,8 +24,10 @@ public abstract class Entity {
     }
 
     public void setDano(int dano){
-        if (dano >= 0)
-            this.dano = dano;
+        if (dano < 1 || dano > 3) {
+            throw new IllegalArgumentException("O ataque deve estar entre 1 e 3.");
+        }
+        this.dano = dano;
     }
 
     

@@ -1,52 +1,41 @@
-<<<<<<< HEAD
 public class Player extends Entity {
     private String nome;
     private int tipo;
+    private int defesa;
 
     public Player(int linha, int coluna, int vida, int dano, String nome, int tipo) {
         super(linha, coluna, vida, dano);
         this.nome = nome;
         this.tipo = tipo;
-=======
-public class Player {
-    private String nome;
-    private int ataque;
-    private int defesa;
+    }
 
     public Player(String nome, int ataque, int defesa) {
-        this.nome = nome;
-        this.ataque = ataque;
+        this(0, 0, 0, ataque, nome, 0);
         this.defesa = defesa;
->>>>>>> c1831ec492da7756f442e1ee69c2d4a3d885baca
     }
 
     public String getNome() {
         return nome;
     }
 
-<<<<<<< HEAD
-    public int getTipo() {
-        return tipo;
-    }
-
-=======
->>>>>>> c1831ec492da7756f442e1ee69c2d4a3d885baca
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-<<<<<<< HEAD
+    public int getTipo() {
+        return tipo;
+    }
+
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
-}
-=======
+
     public int getAtaque() {
-        return ataque;
+        return dano;
     }
 
     public void setAtaque(int ataque) {
-        this.ataque = ataque;
+        setDano(ataque);
     }
 
     public int getDefesa() {
@@ -57,4 +46,3 @@ public class Player {
         this.defesa = defesa;
     }
 }
->>>>>>> c1831ec492da7756f442e1ee69c2d4a3d885baca
