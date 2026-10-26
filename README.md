@@ -142,22 +142,43 @@ No mapa, `P` representa os dois jogadores juntos; separados, aparecem `P1` e `P2
 A fonte de infeccao (`X`) e sorteada uma vez por partida entre os 24 setores
 fora do centro. O primeiro jogador a entrar nela vence imediatamente.
 
-## Turnos e ciclos
+## Comportamento atual dos turnos e ciclos
 
-No turno 0, P1 sai do centro com WASD e depois P2 sai com as setas.
-A partir dai, cada ciclo tem os turnos de acoes de P1 e P2, seguidos pelos
-inimigos. Antes das acoes dos ciclos seguintes, cada jogador pode se mover
-uma vez (apenas sem inimigos no setor) ou pressionar E para ficar.
+**Pendente de revisão:** o fluxo abaixo descreve a implementação atual e precisa
+ser revisado para confirmar se está em conformidade com os requerimentos de
+`TrabalhoPratico.pdf`. Em especial, devem ser conferidos a separação entre
+movimento e ações, o custo da cura, o encerramento antecipado de turnos e a
+contagem dos ciclos.
 
-Cada jogador tem duas acoes de ataque/procura. Um ataque que erra em setor
-oculto tambem consome uma acao; comandos invalidos nao consomem acoes.
-A cura do suporte substitui as duas acoes e so pode ser escolhida no inicio
-do turno. E durante as acoes encerra o turno antecipadamente, inclusive em
-setores privados sem inimigos, onde nao ha ataque nem procura disponiveis.
+1. **Turno inicial (ciclo 0):** os dois jogadores começam em [3,3]. P1 escolhe
+   uma porta e sai usando WASD; depois P2 faz o mesmo usando as setas. Nessa
+   etapa, não é permitido usar E para ficar no centro. Encontrar a fonte já
+   encerra a partida, mesmo nessa etapa.
+2. **Ciclo 1:** após os movimentos iniciais, começam as ações de P1, depois as
+   de P2 e, por último, os ataques dos inimigos.
+3. **Ciclos seguintes:** antes das ações, há uma fase de movimento de P1 e
+   depois de P2. Cada um pode se mover uma vez por uma porta ou usar E para
+   ficar. Só é permitido sair quando não houver inimigos no setor atual.
+4. **Ações dos jogadores:** P1 joga antes de P2. Cada um pode atacar/procurar
+   duas vezes, combinando essas ações. Ataques que erram em setores ocultos e
+   procuras que não encontram nada também gastam uma ação. Comandos inválidos,
+   alvos inexistentes e procura em setor privado não gastam ações.
+5. **Cura do suporte:** P2 pode recuperar 2 DEF de si mesmo ou de P1 vivo no
+   mesmo setor. A cura substitui as duas ações e só pode ser escolhida antes
+   de gastar qualquer ação naquele turno.
+6. **Encerramento do turno:** E permite encerrar as ações antecipadamente. Se
+   não houver ações válidas, o jogo avança automaticamente. Por exemplo, se P2
+   eliminar o último inimigo de um setor privado com a primeira ação, seu turno
+   termina, pois a ação restante não permite curar. P2 com duas ações ainda
+   pode curar em um setor privado vazio; P1 nesse setor tem seu turno pulado.
+7. **Inimigos:** após os jogadores, cada inimigo vivo ataca uma vez cada jogador
+   vivo no mesmo setor. Cada ataque tem um sorteio independente de 1 a 6:
+   resultado par reduz a DEF do alvo pelo ATK do inimigo; ímpar não causa dano.
+   Depois desses ataques, começa o próximo ciclo. Jogadores com DEF zero são
+   eliminados e seus turnos seguintes são pulados.
+8. **Fim da partida:** entrar no setor da fonte dá vitória imediata ao jogador.
+   Há derrota quando todos os jogadores são eliminados ou ao terminar os
+   ataques inimigos do ciclo 25 sem encontrar a fonte; não existe ciclo 26.
 
-Cada inimigo vivo ataca uma vez cada jogador vivo no mesmo setor, com um
-sorteio independente de 1 a 6: par causa dano igual ao ATK; impar erra.
-Jogadores com DEF zero sao eliminados e seus turnos sao pulados. O jogo
-termina imediatamente ao encontrar a fonte, quando ambos morrem ou ao
-final do ciclo 25 sem encontrar a fonte. O painel mostra ciclo, fase,
-acoes restantes e o resultado dos ataques dos inimigos.
+O painel acompanha o jogador ativo e mostra ciclo, fase, ações restantes e o
+resultado dos ataques inimigos. Ações fora da vez do jogador são bloqueadas.
