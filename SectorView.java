@@ -21,6 +21,8 @@ public class SectorView extends Element {
             default: type = "Normal";
         }
         new TextElement(linha + 1, coluna, type).draw(renderer);
+        if (sector == board.getInfectionSource())
+            new TextElement(linha + 2, coluna, "X - Fonte de infeccao encontrada!").draw(renderer);
         new Box(linha + 3, coluna, 11, 33, false).draw(renderer);
         for (Direction direction : Direction.values()) {
             if (sector.hasDoor(direction))
@@ -37,7 +39,7 @@ public class SectorView extends Element {
             new TextElement(linha + 6, coluna + 2, "Sem inimigos").draw(renderer);
         int offset = 3;
         for (Player occupant : board.getPlayers()) {
-            if (occupant.getLinha() == sector.getY() && occupant.getColuna() == sector.getX()) {
+            if (occupant.getDefesa() > 0 && occupant.getLinha() == sector.getY() && occupant.getColuna() == sector.getX()) {
                 new TextElement(linha + 9, coluna + offset, occupant.getNome()
                     + (occupant == player ? " <" : "")).draw(renderer);
                 new TextElement(linha + 10, coluna + offset,

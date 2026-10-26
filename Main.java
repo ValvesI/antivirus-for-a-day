@@ -2,7 +2,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer renderer = new Renderer(90, 33);
+        Renderer renderer = new Renderer(90, 42);
         Board board = new Board(3, 1);
         Player selected = board.getPlayers().get(0);
         SectorView sectorView = new SectorView(4, 42, board, selected);
@@ -12,27 +12,47 @@ public class Main {
         renderer.addElement(selection);
         renderer.addElement(board);
         renderer.addElement(sectorView);
-        renderer.addElement(new TextElement(28, 1, "P1: WASD | P2: setas | 1/2: ver jogador | F + 1/2/3: atacar | B: procurar | Q: sair"));
-        renderer.addElement(new TextElement(29, 1, "Mapa: vazio nao visitado | . visitado | C centro | * porta | painel: ATK/DEF"));
+        renderer.addElement(new TextElement(28, 1, "P1: WASD | P2: setas | F + 1/2/3: atacar | B: procurar | Q: sair"));
+        renderer.addElement(new TextElement(29, 1, "Mapa: vazio nao visitado | . visitado | C centro | X fonte | * porta | ATK/DEF"));
         renderer.addElement(status);
-        renderer.addElement(new TextElement(31, 1, "Suporte selecionado: C + 1/2 para recuperar 2 DEF do jogador escolhido."));
+        renderer.addElement(new TextElement(27, 1, "C + 1/2: cura (substitui 2 acoes) | E: ficar / encerrar turno"));
 
+        TextElement[] details = new TextElement[9];
+        for (int i = 0; i < details.length; i++) {
+            details[i] = new TextElement(32 + i, 1, "");
+            renderer.addElement(details[i]);
+        }
+        String enemyLog = "";
         boolean choosingEnemy = false;
         boolean choosingHealTarget = false;
         try (TerminalInput input = new TerminalInput()) {
             while (true) {
-                selection.setText("Jogador selecionado: " + selected.getNome());
+                if (board.getActivePlayer() != null) selected = board.getActivePlayer();
+                String turn = board.getPhase().toString();
+                selection.setText("Ciclo " + board.getCycle() + "/25 | Fase: " + turn
+                    + " | Acoes: " + (board.isMoving() ? "movimento" : board.getActionsLeft()));
+                for (int i = 0; i < details.length; i++) {
+                    int start = i * 87;
+                    details[i].setText(start < enemyLog.length()
+                        ? enemyLog.substring(start, Math.min(start + 87, enemyLog.length())) : "");
+                }
                 sectorView.setPlayer(selected);
                 renderer.update();
                 renderer.draw();
                 renderer.present();
+                if (board.isFinished()) break;
+                if (board.getPhase() == Board.Phase.ENEMIES) {
+                    enemyLog = board.resolveEnemyTurn();
+                    status.setText(board.isFinished() ? board.getEnding() : "Inimigos finalizaram. Novo ciclo.");
+                    continue;
+                }
                 int key = input.readKey();
                 if (key == -1 || key == 'q' || key == 'Q') break;
                 if (key >= 'A' && key <= 'Z') key = Character.toLowerCase((char) key);
                 if (choosingHealTarget) {
                     choosingHealTarget = false;
                     if (key == '1' || key == '2') {
-                        status.setText(selected.recoverDefense(board.getPlayers().get(key - '1')));
+                        status.setText(board.recoverDefense(selected, board.getPlayers().get(key - '1')));
                         continue;
                     }
                 }
@@ -54,8 +74,10 @@ public class Main {
                     case TerminalInput.LEFT: direction = Direction.WEST; break;
                     case TerminalInput.RIGHT: direction = Direction.EAST; break;
                     case '1': case '2':
-                        selected = board.getPlayers().get(key - '1');
-                        status.setText("Jogador selecionado: " + selected.getNome());
+                        status.setText("Jogador ativo: " + selected.getNome() + ". A ordem e P1, P2, inimigos.");
+                        break;
+                    case 'e':
+                        status.setText(board.isMoving() ? board.stay(selected) : board.endTurn(selected));
                         break;
                     case 'b':
                         status.setText(board.search(selected));
@@ -75,8 +97,8 @@ public class Main {
                     default: break;
                 }
                 if (direction != null) {
-                    selected = board.getPlayers().get(key >= TerminalInput.UP ? 1 : 0);
-                    status.setText(selected.getNome() + ": " + board.move(selected, direction));
+                    Player mover = board.getPlayers().get(key >= TerminalInput.UP ? 1 : 0);
+                    status.setText(mover.getNome() + ": " + board.move(mover, direction));
                 }
             }
         }

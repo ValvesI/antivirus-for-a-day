@@ -128,13 +128,36 @@ funcoes de terminal necessarias. As teclas funcionam sem Enter.
 
 - P1: W, A, S, D.
 - P2: setas do teclado.
-- 1 ou 2: escolhe o jogador exibido no painel; movimentar tambem seleciona o jogador.
-- F seguido de 1, 2 ou 3: ataca o inimigo indicado com o jogador selecionado.
-- Com P2 selecionado: C seguido de 1 (P1 no mesmo setor) ou 2 (o proprio P2)
+- O painel acompanha automaticamente o jogador da vez. Apenas ele pode agir.
+- F seguido de 1, 2 ou 3: ataca o inimigo indicado com o jogador da vez.
+- No inicio do turno de acoes de P2: C seguido de 1 (P1 no mesmo setor) ou 2 (o proprio P2)
   recupera 2 DEF. Nao ha teto de DEF definido no enunciado.
-- B: procura com o jogador selecionado. Dado 1-3: nada; 4: +1 DEF;
+- B: procura com o jogador da vez. Dado 1-3: nada; 4: +1 DEF;
   5: +2 DEF; 6: -1 DEF de todos os inimigos locais, eliminando os que chegarem a zero.
   Setores privados impedem a procura.
 - Q: encerra e restaura a configuracao do terminal.
 
 No mapa, `P` representa os dois jogadores juntos; separados, aparecem `P1` e `P2`.
+
+A fonte de infeccao (`X`) e sorteada uma vez por partida entre os 24 setores
+fora do centro. O primeiro jogador a entrar nela vence imediatamente.
+
+## Turnos e ciclos
+
+No turno 0, P1 sai do centro com WASD e depois P2 sai com as setas.
+A partir dai, cada ciclo tem os turnos de acoes de P1 e P2, seguidos pelos
+inimigos. Antes das acoes dos ciclos seguintes, cada jogador pode se mover
+uma vez (apenas sem inimigos no setor) ou pressionar E para ficar.
+
+Cada jogador tem duas acoes de ataque/procura. Um ataque que erra em setor
+oculto tambem consome uma acao; comandos invalidos nao consomem acoes.
+A cura do suporte substitui as duas acoes e so pode ser escolhida no inicio
+do turno. E durante as acoes encerra o turno antecipadamente, inclusive em
+setores privados sem inimigos, onde nao ha ataque nem procura disponiveis.
+
+Cada inimigo vivo ataca uma vez cada jogador vivo no mesmo setor, com um
+sorteio independente de 1 a 6: par causa dano igual ao ATK; impar erra.
+Jogadores com DEF zero sao eliminados e seus turnos sao pulados. O jogo
+termina imediatamente ao encontrar a fonte, quando ambos morrem ou ao
+final do ciclo 25 sem encontrar a fonte. O painel mostra ciclo, fase,
+acoes restantes e o resultado dos ataques dos inimigos.
