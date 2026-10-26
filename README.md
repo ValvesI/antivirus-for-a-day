@@ -119,3 +119,22 @@ renderer.present();
 
 Quando alguma informação mudar, basta executar novamente `update()`, `draw()` e
 `present()` para redesenhar a interface.
+
+## Controles do jogo
+
+Execute em um terminal Linux/macOS (pode ser o terminal integrado da IDE), com
+`javac *.java` e `java Main`. O console de execucao da IDE pode nao oferecer as
+funcoes de terminal necessarias. As teclas funcionam sem Enter.
+
+- P1: W, A, S, D.
+- P2: setas do teclado.
+- 1 ou 2: escolhe o jogador exibido no painel; movimentar tambem seleciona o jogador.
+- F seguido de 1, 2 ou 3: ataca o inimigo indicado com o jogador selecionado.
+- Com P2 selecionado: C seguido de 1 (P1 no mesmo setor) ou 2 (o proprio P2)
+  recupera 2 DEF. Nao ha teto de DEF definido no enunciado.
+- B: procura com o jogador selecionado. Dado 1-3: nada; 4: +1 DEF;
+  5: +2 DEF; 6: -1 DEF de todos os inimigos locais, eliminando os que chegarem a zero.
+  Setores privados impedem a procura.
+- Q: encerra e restaura a configuracao do terminal.
+
+No mapa, `P` representa os dois jogadores juntos; separados, aparecem `P1` e `P2`.

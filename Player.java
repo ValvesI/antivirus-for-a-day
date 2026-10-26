@@ -14,6 +14,20 @@ public class Player extends Entity {
         this.defesa = defesa;
     }
 
+    public boolean isSupport() { return tipo == 1; }
+
+    public String recoverDefense(Player target) {
+        if (!isSupport()) return "Somente o suporte pode recuperar defesa.";
+        if (defesa <= 0) return "Jogador eliminado nao pode recuperar defesa.";
+        if (target == null || target.getDefesa() <= 0)
+            return "Nao e possivel recuperar um jogador eliminado.";
+        if (linha != target.getLinha() || coluna != target.getColuna())
+            return "O alvo precisa estar no mesmo setor do suporte.";
+        // O enunciado adiciona 2 a DEF, sem estabelecer um teto.
+        target.setDefesa(target.getDefesa() + 2);
+        return target.getNome() + " recuperou 2 DEF. DEF atual: " + target.getDefesa();
+    }
+
     public String getNome() {
         return nome;
     }

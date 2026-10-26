@@ -102,6 +102,8 @@ public class Renderer {
     }
 
     public void present() {
-        System.out.println(render());
+        // Limpa a tela e reposiciona o cursor antes de apresentar o quadro.
+        System.out.print("\033[2J\033[H" + render() + System.lineSeparator());
+        System.out.flush();
     }
 }

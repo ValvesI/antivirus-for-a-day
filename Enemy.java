@@ -20,8 +20,8 @@ public class Enemy extends Entity {
     }
 
     public void setDefesa(int defesa) {
-        if (defesa < 1 || defesa > 3) {
-            throw new IllegalArgumentException("A defesa do inimigo deve estar entre 1 e 3.");
+        if (defesa < 0 || defesa > 3) {
+            throw new IllegalArgumentException("A defesa do inimigo deve estar entre 0 e 3.");
         }
         this.defesa = defesa;
     }

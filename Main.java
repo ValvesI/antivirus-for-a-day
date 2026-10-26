@@ -1,87 +1,90 @@
-import java.util.Scanner;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer renderer = new Renderer(60, 16);
+        Renderer renderer = new Renderer(90, 33);
+        Board board = new Board(3, 1);
+        Player selected = board.getPlayers().get(0);
+        SectorView sectorView = new SectorView(4, 42, board, selected);
+        TextElement status = new TextElement(30, 1, "Os dois jogadores iniciam no centro, com quatro portas.");
+        TextElement selection = new TextElement(1, 1, "");
+        renderer.addElement(new TextElement(0, 1, "Antivirus por um dia - exploracao de setores"));
+        renderer.addElement(selection);
+        renderer.addElement(board);
+        renderer.addElement(sectorView);
+        renderer.addElement(new TextElement(28, 1, "P1: WASD | P2: setas | 1/2: ver jogador | F + 1/2/3: atacar | B: procurar | Q: sair"));
+        renderer.addElement(new TextElement(29, 1, "Mapa: vazio nao visitado | . visitado | C centro | * porta | painel: ATK/DEF"));
+        renderer.addElement(status);
+        renderer.addElement(new TextElement(31, 1, "Suporte selecionado: C + 1/2 para recuperar 2 DEF do jogador escolhido."));
 
-        TextElement titulo = new TextElement(
-            0, 1, "Antivirus for a Day - teste"
-        );
-
-        GridBox tabuleiro = new GridBox(2, 1, 11, 21, 5);
-
-        // As células usam coordenadas de 1 a 5.
-        int setorX = 3;
-        int setorY = 3;
-        Pair<Integer, Integer> centro = tabuleiro.getCellCenter(setorX, setorY);
-        TextElement jogador = new TextElement(
-            centro.getFirst(), centro.getSecond(), "P"
-        );
-        tabuleiro.addElement(jogador);
-
-        // A entidade guarda a posição no tabuleiro; o texto usa a posição na tela.
-        int inimigoX = 4;
-        int inimigoY = 3;
-        int ataqueInimigo = 2;
-        Enemy inimigo = new Enemy(inimigoY, inimigoX, 2, ataqueInimigo, 0, 2);
-        Pair<Integer, Integer> centroInimigo = tabuleiro.getCellCenter(inimigoX, inimigoY);
-        TextElement inimigoVisual = new TextElement(
-            centroInimigo.getFirst(), centroInimigo.getSecond(), "E"
-        );
-        tabuleiro.addElement(inimigoVisual);
-
-        Box painel = new Box(2, 25, 8, 25);
-        painel.addElement(new TextElement(3, 27, "Jogador: P"));
-        TextElement setor = new TextElement(4, 27, "");
-        painel.addElement(setor);
-        painel.addElement(new TextElement(5, 27, "Inimigo: E"));
-        painel.addElement(new TextElement(6, 27, "Setor inimigo: " + inimigoX + ", " + inimigoY));
-        TextElement atributosInimigo = new TextElement(7, 27, "");
-        painel.addElement(atributosInimigo);
-        renderer.addElement(new TextElement(14, 1, "WASD + Enter: mover | Q + Enter: sair"));
-
-        renderer.addElement(titulo);
-        renderer.addElement(tabuleiro);
-        renderer.addElement(painel);
-
-        try (Scanner entrada = new Scanner(System.in)) {
+        boolean choosingEnemy = false;
+        boolean choosingHealTarget = false;
+        try (TerminalInput input = new TerminalInput()) {
             while (true) {
-                centro = tabuleiro.getCellCenter(setorX, setorY);
-                jogador.setLinha(centro.getFirst());
-                jogador.setColuna(centro.getSecond());
-                setor.setText("Setor: " + setorX + ", " + setorY);
-                atributosInimigo.setText("ATK: " + ataqueInimigo + " DEF: " + inimigo.getDefesa());
-                // Exibe os dois símbolos quando ocupam o mesmo setor.
-                inimigoVisual.setText(setorX == inimigoX && setorY == inimigoY ? "PE" : "E");
-
+                selection.setText("Jogador selecionado: " + selected.getNome());
+                sectorView.setPlayer(selected);
                 renderer.update();
                 renderer.draw();
-                // Limpa a tela em terminais com suporte a ANSI.
-                if (System.console() != null) {
-                    System.out.print("\033[H\033[2J");
-                    System.out.flush();
-                }
                 renderer.present();
-                System.out.print("Comando: ");
-                System.out.flush();
-
-                if (!entrada.hasNextLine()) {
-                    break;
+                int key = input.readKey();
+                if (key == -1 || key == 'q' || key == 'Q') break;
+                if (key >= 'A' && key <= 'Z') key = Character.toLowerCase((char) key);
+                if (choosingHealTarget) {
+                    choosingHealTarget = false;
+                    if (key == '1' || key == '2') {
+                        status.setText(selected.recoverDefense(board.getPlayers().get(key - '1')));
+                        continue;
+                    }
                 }
-                String comando = entrada.nextLine().trim();
-                if (comando.equalsIgnoreCase("q")) {
-                    break;
+                if (choosingEnemy) {
+                    choosingEnemy = false;
+                    if (key >= '1' && key <= '3') {
+                        status.setText(board.attack(selected, key - '1'));
+                        continue;
+                    }
                 }
-
-                // Mantém o jogador dentro dos setores de 1 a gridSize.
-                switch (comando.toLowerCase(java.util.Locale.ROOT)) {
-                    case "w": setorY = Math.max(1, setorY - 1); break;
-                    case "s": setorY = Math.min(tabuleiro.getGridSize(), setorY + 1); break;
-                    case "a": setorX = Math.max(1, setorX - 1); break;
-                    case "d": setorX = Math.min(tabuleiro.getGridSize(), setorX + 1); break;
-                    default: System.out.println("Comando inválido. Use W, A, S, D ou Q.");
+                Direction direction = null;
+                switch (key) {
+                    case 'w': direction = Direction.NORTH; break;
+                    case 's': direction = Direction.SOUTH; break;
+                    case 'a': direction = Direction.WEST; break;
+                    case 'd': direction = Direction.EAST; break;
+                    case TerminalInput.UP: direction = Direction.NORTH; break;
+                    case TerminalInput.DOWN: direction = Direction.SOUTH; break;
+                    case TerminalInput.LEFT: direction = Direction.WEST; break;
+                    case TerminalInput.RIGHT: direction = Direction.EAST; break;
+                    case '1': case '2':
+                        selected = board.getPlayers().get(key - '1');
+                        status.setText("Jogador selecionado: " + selected.getNome());
+                        break;
+                    case 'b':
+                        status.setText(board.search(selected));
+                        break;
+                    case 'c':
+                        if (!selected.isSupport()) {
+                            status.setText("Somente P2 (suporte) pode recuperar defesa. Selecione com 2.");
+                        } else {
+                            choosingHealTarget = true;
+                            status.setText("Recuperar 2 DEF de quem? 1: P1 no mesmo setor | 2: proprio P2.");
+                        }
+                        break;
+                    case 'f':
+                        choosingEnemy = true;
+                        status.setText("Escolha o inimigo: 1, 2 ou 3 (outra tecla cancela).");
+                        break;
+                    default: break;
+                }
+                if (direction != null) {
+                    selected = board.getPlayers().get(key >= TerminalInput.UP ? 1 : 0);
+                    status.setText(selected.getNome() + ": " + board.move(selected, direction));
                 }
             }
+        }
+        catch (IOException exception) {
+            System.err.println("Execute em um terminal Linux/macOS (nao no console da IDE): "
+                + exception.getMessage());
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
         }
         System.out.println("Jogo encerrado.");
     }

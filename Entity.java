@@ -8,6 +8,10 @@ public abstract class Entity {
         setDano(dano);  
     }
 
+    public int getLinha() { return linha; }
+    public int getColuna() { return coluna; }
+    public int getDano() { return dano; }
+
     public void setColuna(int coluna){
         if (coluna >= 0 && coluna < Renderer.NUM_COLUNAS)
             this.coluna = coluna;
