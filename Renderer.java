@@ -2,7 +2,6 @@
 // para compor a tela antes de imprimi-la.
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Renderer {
     public static final int NUM_LINHAS = 10;
@@ -27,7 +26,9 @@ public class Renderer {
         this.grade = new char[altura][largura];
         this.elements = new ArrayList<>();
         for (char[] linha : grade) {
-            Arrays.fill(linha, ' ');
+            for (int coluna = 0; coluna < linha.length; coluna++) {
+                linha[coluna] = ' ';
+            }
         }
     }
 
@@ -42,7 +43,9 @@ public class Renderer {
     public char[][] getGrade() {
         char[][] copia = new char[altura][largura];
         for (int linha = 0; linha < altura; linha++) {
-            copia[linha] = Arrays.copyOf(grade[linha], largura);
+            for (int coluna = 0; coluna < largura; coluna++) {
+                copia[linha][coluna] = grade[linha][coluna];
+            }
         }
         return copia;
     }
@@ -60,7 +63,9 @@ public class Renderer {
 
     public void clear() {
         for (char[] linha : grade) {
-            Arrays.fill(linha, ' ');
+            for (int coluna = 0; coluna < linha.length; coluna++) {
+                linha[coluna] = ' ';
+            }
         }
     }
 

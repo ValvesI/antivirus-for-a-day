@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -9,7 +7,7 @@ public class Sector {
 
     private final int x, y;
     private final Type type;
-    private final EnumSet<Direction> doors = EnumSet.noneOf(Direction.class);
+    private final List<Direction> doors = new ArrayList<>();
     private final List<Enemy> enemies = new ArrayList<>();
     private boolean visited;
 
@@ -25,7 +23,7 @@ public class Sector {
     public boolean isVisited() { return visited; }
     public boolean hasDoor(Direction direction) { return doors.contains(direction); }
     void openDoor(Direction direction) { doors.add(direction); }
-    public List<Enemy> getEnemies() { return Collections.unmodifiableList(enemies); }
+    public List<Enemy> getEnemies() { return new ArrayList<>(enemies); }
     public boolean hasEnemies() { return !enemies.isEmpty(); }
 
     public void visit(Random random) {
@@ -55,7 +53,11 @@ public class Sector {
         }
         for (Enemy enemy : enemies)
             enemy.setDefesa(Math.max(0, enemy.getDefesa() - 1));
-        enemies.removeIf(enemy -> enemy.getDefesa() == 0);
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            if (enemies.get(i).getDefesa() == 0) {
+                enemies.remove(i);
+            }
+        }
         return prefix + "todos os inimigos locais perderam 1 DEF.";
     }
 

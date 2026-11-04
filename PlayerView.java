@@ -4,7 +4,6 @@ public class PlayerView extends Box {
     private final TextElement ataqueText;
     private final TextElement defesaText;
 
-    @SuppressWarnings("this-escape")
     public PlayerView(int linha, int coluna, Player player) {
         super(linha, coluna, 5, 20);
 

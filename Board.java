@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -111,7 +111,13 @@ public class Board extends Element {
             }
         }
         if (attacks == 0) log.append("nenhum ataque. ");
-        if (players.stream().allMatch(player -> player.getDefesa() <= 0)) {
+        boolean todosEliminados = true;
+        for (Player player : players) {
+            if (player.getDefesa() > 0) {
+                todosEliminados = false;
+            }
+        }
+        if (todosEliminados) {
             ending = "Derrota: todos os jogadores foram eliminados.";
             phase = Phase.FINISHED;
         } else if (cycle == 25) {
@@ -126,14 +132,14 @@ public class Board extends Element {
         return log.toString() + ending;
     }
 
-    // Cada bit representa uma porta: norte=1, leste=2, sul=4, oeste=8.
+    // Cada letra indica uma porta aberta: N=norte, L=leste, S=sul, O=oeste.
     // As ligacoes sao fixas e reciprocas; todos os setores sao acessiveis.
-    private static final int[][] DOORS = {
-        {6, 14, 12, 6, 12},
-        {5, 3, 15, 9, 5},
-        {7, 14, 15, 14, 13},
-        {5, 3, 15, 9, 5},
-        {3, 10, 11, 10, 9}
+    private static final String[][] DOORS = {
+        {"LS", "LSO", "SO", "LS", "SO"},
+        {"NS", "NL", "NLSO", "NO", "NS"},
+        {"NLS", "LSO", "NLSO", "LSO", "NSO"},
+        {"NS", "NL", "NLSO", "NO", "NS"},
+        {"NL", "LO", "NLO", "LO", "NO"}
     };
 
     public Board(int linha, int coluna) { this(linha, coluna, new Random()); }
@@ -148,7 +154,7 @@ public class Board extends Element {
                     : Sector.Type.values()[(x + y) % 3];
                 Sector sector = new Sector(x, y, type);
                 for (Direction direction : Direction.values()) {
-                    if ((DOORS[y - 1][x - 1] & (1 << direction.ordinal())) != 0)
+                    if (DOORS[y - 1][x - 1].indexOf(getDoorLetter(direction)) >= 0)
                         sector.openDoor(direction);
                 }
                 sectors[y - 1][x - 1] = sector;
@@ -162,7 +168,9 @@ public class Board extends Element {
         Player p1 = new Player("P1", 2, 6);
         Player p2 = new Player("P2", 1, 7);
         p2.setTipo(1);
-        players = Arrays.asList(p1, p2);
+        players = new ArrayList<>();
+        players.add(p1);
+        players.add(p2);
         for (Player player : players) { player.setLinha(3); player.setColuna(3); }
         getSector(3, 3).visit(random);
     }
@@ -172,12 +180,22 @@ public class Board extends Element {
             throw new IllegalArgumentException("Setor fora do tabuleiro.");
         return sectors[y - 1][x - 1];
     }
-    public List<Player> getPlayers() { return java.util.Collections.unmodifiableList(players); }
+    public List<Player> getPlayers() { return new ArrayList<>(players); }
     public Sector getSector(Player player) { return getSector(player.getColuna(), player.getLinha()); }
 
     public Sector getInfectionSource() { return infectionSource; }
     public Player getWinner() { return winner; }
     public boolean isFinished() { return phase == Phase.FINISHED; }
+
+    private char getDoorLetter(Direction direction) {
+        switch (direction) {
+            case NORTH: return 'N';
+            case EAST: return 'L';
+            case SOUTH: return 'S';
+            case WEST: return 'O';
+            default: throw new IllegalArgumentException("Direcao desconhecida.");
+        }
+    }
 
     public String move(Player player, Direction direction) {
         String error = checkTurn(player, true);
