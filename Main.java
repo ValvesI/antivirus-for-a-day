@@ -1,5 +1,12 @@
 import java.util.Scanner;
 
+/*
+    GRR20245988 Iago Pereira Ramalho
+    GRR20244503 Letícia de Oliveira Santos
+    GRR20255200 Lucas Barroso Leal
+    GRR20252276 Vinícius Henrique Alves de Souza
+*/
+
 public class Main {
     public static void main(String[] args) {
         Renderer renderer = new Renderer(90, 42);
