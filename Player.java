@@ -3,14 +3,14 @@ public class Player extends Entity {
     private int tipo;
     private int defesa;
 
-    public Player(int linha, int coluna, int vida, int dano, String nome, int tipo) {
-        super(linha, coluna, vida, dano);
+    public Player(int linha, int coluna, int dano, String nome, int tipo) {
+        super(linha, coluna, dano);
         this.nome = nome;
         this.tipo = tipo;
     }
 
     public Player(String nome, int ataque, int defesa) {
-        this(0, 0, 0, ataque, nome, 0);
+        this( 0, 0, ataque, nome, 0);
         this.defesa = defesa;
     }
 

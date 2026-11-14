@@ -33,7 +33,7 @@ public class Sector {
         int count = random.nextInt(3) + 1;
         for (int i = 0; i < count; i++) {
             int power = random.nextInt(3) + 1;
-            enemies.add(new Enemy(y, x, power, power, 0, power));
+            enemies.add(new Enemy(y, x, power, 0, power));
         }
     }
 

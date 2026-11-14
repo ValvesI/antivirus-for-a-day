@@ -1,10 +1,9 @@
 public abstract class Entity {
-    protected int linha, coluna, vida, dano;
+    protected int linha, coluna, dano;
 
-    public Entity(int linha, int coluna, int vida, int dano) {
+    public Entity(int linha, int coluna, int dano) {
         setLinha(linha);
         setColuna(coluna);
-        setVida(vida);
         setDano(dano);  
     }
 
@@ -22,17 +21,10 @@ public abstract class Entity {
             this.linha = linha;
     }
 
-    public void setVida(int vida){
-        if (vida >= 0)
-            this.vida = vida;
-    }
-
     public void setDano(int dano){
         if (dano < 1 || dano > 3) {
             throw new IllegalArgumentException("O ataque deve estar entre 1 e 3.");
         }
         this.dano = dano;
-    }
-
-    
+    }  
 }

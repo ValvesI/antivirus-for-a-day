@@ -1,8 +1,8 @@
 public class Enemy extends Entity {
     protected int tipo, defesa;    
 
-    public Enemy(int linha, int coluna, int vida, int dano, int tipo, int defesa) {
-        super(linha, coluna, vida, dano);
+    public Enemy(int linha, int coluna, int dano, int tipo, int defesa) {
+        super(linha, coluna, dano);
         this.tipo = tipo;
         setDefesa(defesa);
     }
