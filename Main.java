@@ -156,6 +156,7 @@ public class Main {
             }
         }
 
+        entrada.close();
         System.out.println("Jogo encerrado.");
     }
 }
