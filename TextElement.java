@@ -21,14 +21,15 @@ public class TextElement extends Element {
     }
 
     @Override
+    public Pair<Integer, Integer> getSize() {
+        return new Pair<>(1, text.length());
+    }
+
+    @Override
     public void draw(Renderer renderer) {
         for (int i = 0; i < text.length(); i++) {
             renderer.setChar(linha, coluna + i, text.charAt(i));
         }
     }
 
-    @Override
-    public Pair<Integer, Integer> getSize() {
-        return new Pair<>(1, text.length());
-    }
 }

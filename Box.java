@@ -51,6 +51,19 @@ public class Box extends Element {
         this.largura = largura;
     }
 
+    public boolean isAdjustable() {
+        return isAdjustable;
+    }
+
+    public void setAdjustable(boolean adjustable) {
+        isAdjustable = adjustable;
+    }
+
+    @Override
+    public Pair<Integer, Integer> getSize() {
+        return new Pair<>(altura, largura);
+    }
+
     public final void addElement(Element element) {
         if (element == null) {
             throw new IllegalArgumentException("O elemento não pode ser nulo.");
@@ -67,19 +80,6 @@ public class Box extends Element {
 
     public void removeElement(Element element) {
         elements.remove(element);
-    }
-
-    public boolean isAdjustable() {
-        return isAdjustable;
-    }
-
-    public void setAdjustable(boolean adjustable) {
-        isAdjustable = adjustable;
-    }
-
-    @Override
-    public Pair<Integer, Integer> getSize() {
-        return new Pair<>(altura, largura);
     }
 
     @Override

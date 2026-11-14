@@ -7,21 +7,21 @@ public class Main {
         Player jogadorDaVez = board.getPlayers().get(0);
         SectorView sectorView = new SectorView(4, 42, board, jogadorDaVez);
         TextElement status = new TextElement(30, 1,
-            "Os dois jogadores iniciam no centro, com quatro portas.");
+                "Os dois jogadores iniciam no centro, com quatro portas.");
         TextElement selection = new TextElement(1, 1, "");
 
         renderer.addElement(new TextElement(0, 1,
-            "Antivirus por um dia - exploracao de setores"));
+                "Antivirus por um dia - exploracao de setores"));
         renderer.addElement(selection);
         renderer.addElement(board);
         renderer.addElement(sectorView);
         renderer.addElement(new TextElement(28, 1,
-            "Mover: W/A/S/D | F + 1/2/3: atacar | B: procurar | Q: sair"));
+                "Mover: W/A/S/D | F + 1/2/3: atacar | B: procurar | Q: sair"));
         renderer.addElement(new TextElement(29, 1,
-            "Mapa: vazio nao visitado | . visitado | C centro | X fonte | * porta | ATK/DEF"));
+                "Mapa: vazio nao visitado | . visitado | C centro | X fonte | * porta | ATK/DEF"));
         renderer.addElement(status);
         renderer.addElement(new TextElement(27, 1,
-            "C + 1/2: cura (substitui 2 acoes) | E: ficar / encerrar turno"));
+                "C + 1/2: cura (substitui 2 acoes) | E: ficar / encerrar turno"));
 
         TextElement[] details = new TextElement[9];
         for (int i = 0; i < details.length; i++) {
@@ -41,7 +41,7 @@ public class Main {
 
             String fase = board.getPhase().toString();
             selection.setText("Ciclo " + board.getCycle() + "/25 | Fase: " + fase
-                + " | Acoes: " + (board.isMoving() ? "movimento" : board.getActionsLeft()));
+                    + " | Acoes: " + (board.isMoving() ? "movimento" : board.getActionsLeft()));
 
             for (int i = 0; i < details.length; i++) {
                 int inicio = i * 87;
@@ -90,7 +90,7 @@ public class Main {
                 escolhendoAlvoCura = false;
                 if (tecla == '1' || tecla == '2') {
                     status.setText(board.recoverDefense(jogadorDaVez,
-                        board.getPlayers().get(tecla - '1')));
+                            board.getPlayers().get(tecla - '1')));
                     continue;
                 }
             }
@@ -105,10 +105,18 @@ public class Main {
 
             Direction direcao = null;
             switch (tecla) {
-                case 'w': direcao = Direction.NORTH; break;
-                case 's': direcao = Direction.SOUTH; break;
-                case 'a': direcao = Direction.WEST; break;
-                case 'd': direcao = Direction.EAST; break;
+                case 'w':
+                    direcao = Direction.NORTH;
+                    break;
+                case 's':
+                    direcao = Direction.SOUTH;
+                    break;
+                case 'a':
+                    direcao = Direction.WEST;
+                    break;
+                case 'd':
+                    direcao = Direction.EAST;
+                    break;
                 case 'e':
                     if (board.isMoving()) {
                         status.setText(board.stay(jogadorDaVez));
@@ -137,7 +145,7 @@ public class Main {
 
             if (direcao != null) {
                 status.setText(jogadorDaVez.getNome() + ": "
-                    + board.move(jogadorDaVez, direcao));
+                        + board.move(jogadorDaVez, direcao));
             }
         }
 

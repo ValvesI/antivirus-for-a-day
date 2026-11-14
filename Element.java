@@ -23,11 +23,14 @@ public class Element {
         this.linha = linha;
     }
 
-    public void update() {}
-
-    public void draw(Renderer renderer) {}
-
     public Pair<Integer, Integer> getSize() {
         return new Pair<>(1, 1);
     }
+
+    public void update() {
+    }
+
+    public void draw(Renderer renderer) {
+    }
+
 }

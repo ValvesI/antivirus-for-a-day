@@ -50,6 +50,15 @@ public class Renderer {
         return copia;
     }
 
+    public boolean setChar(int linha, int coluna, char caractere) {
+        if (linha < 0 || linha >= altura || coluna < 0 || coluna >= largura) {
+            return false;
+        }
+
+        grade[linha][coluna] = caractere;
+        return true;
+    }
+
     public void addElement(Element element) {
         if (element == null) {
             throw new IllegalArgumentException("O elemento não pode ser nulo.");
@@ -67,15 +76,6 @@ public class Renderer {
                 linha[coluna] = ' ';
             }
         }
-    }
-
-    public boolean setChar(int linha, int coluna, char caractere) {
-        if (linha < 0 || linha >= altura || coluna < 0 || coluna >= largura) {
-            return false;
-        }
-
-        grade[linha][coluna] = caractere;
-        return true;
     }
 
     // O jogo é baseado em turnos, mas o método permanece disponível para

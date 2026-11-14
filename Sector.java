@@ -21,6 +21,7 @@ public class Sector {
     public int getY() { return y; }
     public Type getType() { return type; }
     public boolean isVisited() { return visited; }
+    
     public boolean hasDoor(Direction direction) { return doors.contains(direction); }
     void openDoor(Direction direction) { doors.add(direction); }
     public List<Enemy> getEnemies() { return new ArrayList<>(enemies); }
